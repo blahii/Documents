@@ -1,0 +1,16 @@
+{
+  "index": "Введение в Crypto-Cash API",
+  "another": "Merchant Crypto-Cash API ",
+  "advanced": "Crypto-Cash API (iframe)",
+  "api-documentation": "Payment Crypto-Cash API",
+  "about": {
+    "title": "About",
+    "type": "page"
+  },
+  "contact": {
+    "title": "Contact ↗",
+    "type": "page",
+    "href": "info@crypto-cash.world",
+    "newWindow": true
+  }
+}
