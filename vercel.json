@@ -1,0 +1,8 @@
+{
+    "build": {
+      "env": {
+        "VERCEL_DEEP_CLONE": "true"
+      }
+    }
+  }
+  
