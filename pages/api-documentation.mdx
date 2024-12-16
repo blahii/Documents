@@ -160,24 +160,6 @@
 
 ---
 
-### Список фиатных валют
-**URL**: `https://crypto-cash.world/merchant/api/v1/fiat-currencies/list/`
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": ["UAH", "USD"]
-  }
-}
-```
-
----
-
 ### Курсы криптовалют
 **URL**: `https://crypto-cash.world/merchant/api/v1/crypto-currencies/rates/list/`
 
@@ -192,84 +174,6 @@
     "items": {
       "USDT/USDT": "1.00",
       "NEAR/USDT": "6.887"
-    }
-  }
-}
-```
-
----
-
-### Курсы фиатных валют
-**URL**: `https://crypto-cash.world/merchant/api/v1/fiat-currencies/rates/list/`
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": {
-      "USD/UAH": "39.54",
-      "USD/PLN": "4.05"
-    }
-  }
-}
-```
-
----
-
-### Список банков
-**URL**: `https://crypto-cash.world/merchant/api/v1/banks/list/`
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-- **`currency`**: Код фиатной валюты
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": [
-      {
-        "id": 1,
-        "title": "Bank",
-        "cardNumberRequired": true,
-        "ibanRequired": false,
-        "phoneRequired": true,
-        "userFullNameRequired": true
-      }
-    ]
-  }
-}
-```
-
----
-
-### Покупка фиатных валют
-**URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/buy/fiat/`
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-- **`amount`**: Сумма покупки
-- **`currency`**: Валюта
-- **`bank`**: Банк
-- **`cardNumber`** (опционально): Номер карты
-- **`iban`** (опционально): IBAN
-- **`fullName`** (опционально): ФИО получателя
-- **`phone`** (опционально): Номер телефона
-- **`externalId`**: Внешний ID
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "id": "195",
-      "externalId": "195"
     }
   }
 }
