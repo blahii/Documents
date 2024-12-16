@@ -121,7 +121,9 @@
 
 ---
 
-### Вывод криптовалюты
+### Вывод криптовалюты (USDT)
+Осуществляется исключительно в валюте USDT 
+
 **URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/withdrawal/`
 
 #### Параметры (data):
@@ -199,27 +201,6 @@
   "code": 200,
   "data": {
     "items": ["UAH", "USD"]
-  }
-}
-```
-
----
-
-### Получение курсов криптовалют
-**URL**: `https://crypto-cash.world/merchant/api/v1/crypto-currencies/rates/list/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": {
-      "USDT/USDT": "1.00",
-      "NEAR/USDT": "6.887"
-    }
   }
 }
 ```
