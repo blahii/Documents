@@ -148,24 +148,6 @@
 
 ---
 
-### Список криптовалют
-**URL**: `https://crypto-cash.world/merchant/api/v1/crypto-currencies/list/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": ["BTC", "ETH"]
-  }
-}
-```
-
----
-
 ### Список сетей
 **URL**: `https://crypto-cash.world/merchant/api/v1/networks/list/`
 
@@ -183,6 +165,24 @@
       {"title": "CCHAIN", "memo": false},
       {"title": "ESO", "memo": true}
     ]
+  }
+}
+```
+
+---
+
+### Список криптовалют
+**URL**: `https://crypto-cash.world/merchant/api/v1/crypto-currencies/list/`
+
+#### Параметры (data):
+- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "items": ["BTC", "ETH"]
   }
 }
 ```
@@ -221,63 +221,6 @@
     "items": {
       "USD/UAH": "39.54",
       "USD/PLN": "4.05"
-    }
-  }
-}
-```
-
----
-
-### Получение списка банков и необходимых полей
-**URL**: `https://crypto-cash.world/merchant/api/v1/banks/list/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-- **`currency`**: Код фиатной валюты.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": [
-     {
-        "id": 1,
-        "title": "Bank",
-        "cardNumberRequired": true,
-        "ibanRequired": false,
-        "phoneRequired": true,
-        "userFullNameRequired": true
-      }
-    ]
-  }
-}
-```
-
----
-
-### Покупка фиатных валют
-**URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/buy/fiat/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-- **`amount`**: Сумма покупки (используем валюту, которую покупаем).
-- **`currency`**: Валюта.
-- **`bank`**: Банк.
-- **`cardNumber`**: Номер карты (не обязательный параметр, зависит от банка).
-- **`iban`**: IBAN (не обязательный параметр, зависит от банка).
-- **`fullName`**: ФИО получателя (не обязательный параметр, зависит от банка).
-- **`phone`**: Номер телефона (не обязательный параметр, зависит от банка).
-- **`externalId`**: Внешний ID.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "id": "195",
-      "externalId": "195"
     }
   }
 }
