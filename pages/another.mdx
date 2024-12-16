@@ -205,33 +205,6 @@
 
 ---
 
-### Продажа криптовалюты
-**URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/sale/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-- **`amount`**: Сумма продажи.
-- **`currency`**: Валюта.
-- **`network`**: Подсеть.
-- **`externalId`**: Внешний ID.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "address": "d0a1bd9db196f1de4b892c2abd82a0099abde5a02045bc83c7e0ef27e3fa70b6",
-      "memo": "",
-      "endsAt": "1714731925",
-      "externalId": "195"
-    }
-  }
-}
-```
-
----
-
 ### Получение курсов криптовалют
 **URL**: `https://crypto-cash.world/merchant/api/v1/crypto-currencies/rates/list/`
 
