@@ -3,8 +3,8 @@
   "another": "Merchant Crypto-Cash API",
   "advanced": "Fiat On-Ramp iFrame API",
   "api-documentation": "Crypto In/Out API",
-  "fiat": "Fiat List",
-  "crypto": "Crypto List",
+  "fiat-list": "Fiat List",
+  "crypto-list": "Crypto List",
   "about": {
     "title": "About",
     "type": "page"
