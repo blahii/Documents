@@ -3,6 +3,8 @@
   "another": "Merchant Crypto-Cash API ",
   "advanced": "Crypto-Cash API (iframe)",
   "api-documentation": "Payment Crypto-Cash API",
+  "fiat": "Fiat",
+  "crypto": "Crypto",
   "about": {
     "title": "About",
     "type": "page"
