@@ -114,6 +114,33 @@
 
 ---
 
+
+### Список фиатных валют
+**URL**: `https://crypto-cash.world/merchant/api/v1/fiat-currencies/list/`
+
+#### Параметры (data):
+- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "items": [
+      {"currency": "USD", "buy": false, "sale": true},
+      {"currency": "EUR", "buy": false, "sale": true},
+      {"currency": "UAH", "buy": true, "sale": false}
+    ]
+  }
+}
+```
+
+Примечание:
+buy : - признак использование валюты для продажи (false - нет, true - да)
+sale: - признак использования валюты для покупки (false - нет, true - да)
+
+---
+
 ### Вывод криптовалюты
 **URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/withdrawal/`
 
