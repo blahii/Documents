@@ -141,31 +141,6 @@ sale: - признак использования валюты для покуп
 
 ---
 
-### Вывод криптовалюты
-**URL**: `https://crypto-cash.world/merchant/api/v1/balance/actions/withdrawal/`
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-- **`address`**: Номер счета
-- **`amount`**: Сумма снятия
-- **`memo`** (опционально): Дополнительная информация
-- **`network`**: Подсеть
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "accountAmount": "15.000",
-      "companyAmount": "20.000"
-    }
-  }
-}
-```
-
----
-
 ### Запрос на покупку криптовалюты за фиатные валюты
 **URL**: `https://crypto-cash.world/merchant/api/v1/mercuryo/form/retrieve/`
 
