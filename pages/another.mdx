@@ -236,36 +236,6 @@ sale: - признак использования валюты для покуп
 
 ---
 
-### Запрос на покупку криптовалюты за фиатные валюты
-**URL**: `https://crypto-cash.world/merchant/api/v1/mercuryo/form/retrieve/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-- **`fiatAmount`**: Сумма покупки (используем валюту, которую покупаем).
-- **`fiatCurrency`**: Фиатная валюта.
-- **`currency`**: Криптовалюта.
-- **`address`**: Номер криптокошелька.
-- **`network`**: Подсеть криптовалюты. Не обязательный параметр (зависит от криптовалюты).
-- **`redirectUrl`**: Ссылка для перенаправления после оплаты.
-- **`externalId`**: Внешний ID.
-- **`lang`**: Язык формы.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "externalId": "195",
-      "url": "https://exchange.mercuryo.io/?widget_id=0b50150a-1ba0-445e-8637-d62f887afadc&address=...&hide_address=true&signature=...&fiat_currency=BGN&currency=USDT&networks=ERC20&fiat_amount=500.00&type=buy&fix_amount=true&fix_currency=true&fix_fiat_amount=true&fix_fiat_currency=true&merchant_transaction_id=...&lang=en&redirect_url=...",
-    }
-  }
-}
-
-```
-
----
-
 ### Статусы заказов
 - **New**
 - **Waiting**
