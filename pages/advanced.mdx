@@ -23,6 +23,9 @@
 - **`amount`**: Сумма заказа
 - **`currency`**: Код фиатной валюты
 - **`number`**: Уникальный идентификатор заказа
+- **`redirectUrl`**: Ссылка для перенаправления после оплаты. Не обязательный параметр.
+
+В ответ сервер вернёт url (`paymentUrl`) для перенаправления пользователя на страницу оплаты.
 
 #### Пример ответа:
 ```json
@@ -30,7 +33,7 @@
   "code": 200,
   "data": {
     "item": {
-      "paymentUrl": "https://crypto-cash.world/merchant/order/1/"
+      "paymentUrl": "https://buy-crypto.cash/merchant/order/ee6b7352-8e8a-43ad-a09e-b2f48c336e90/"
     }
   }
 }
@@ -256,3 +259,27 @@ sale: - признак использования валюты для покуп
 #### Формат вебхука:
 - **`data`**: Поле содержит объект JSON с информацией о заказе, закодированный в строку base64.
 - **`signature`**: Подпись запроса, созданная на основе приватного ключа и данных (`SECRET_KEY` + `data`). Подпись кодируется в SHA256 и затем в base64.
+
+
+#### Пример ответа на вебхук:
+
+Запрос при изменении статуса заказа:
+
+```json
+{
+     "data": "eyJpZCI6ICJlMGI5YTdiNS03ZDBkLTQ3YzUtODUzYS05ZTViNmJiNDBkMDUiLCAib3JkZXJJZCI6ICI3Nzc3IiwgInN0YXR1cyI6ICJQYWlkIiwgInVwZGF0ZWRBdCI6ICIyMDI0LTEwLTAxIDA5OjQxOjAwLjYwNjIzNyswMDowMCIsICJwdWJsaWNLZXkiOiAiYTJlMWI3YzgzODI2NGVmZTgyZmY1NzVlYzA3ZjhmYjQifQ==",
+     "signature": "911f6d9a7f46dc3878c3c691aae474d22955e58a4cc4a31e91a164a7a95368e1eyJpZCI6ICJlMGI5YTdiNS03ZDBkLTQ3YzUtODUzYS05ZTViNmJiNDBkMDUiLCAib3JkZXJJZCI6ICI3Nzc3IiwgInN0YXR1cyI6ICJQYWlkIiwgInVwZGF0ZWRBdCI6ICIyMDI0LTEwLTAxIDA5OjQxOjAwLjYwNjIzNyswMDowMCIsICJwdWJsaWNLZXkiOiAiYTJlMWI3YzgzODI2NGVmZTgyZmY1NzVlYzA3ZjhmYjQifQ=="
+}
+```
+
+Запрос при изменении статуса заказа:
+
+```json
+{
+     "id": "e0b9a7b5-7d0d-47c5-853a-9e5b6bb40d05",
+     "orderId": "7777",
+     "status": "Paid",
+     "updatedAt": "2024-10-01 09:41:00.606237+00:00",
+     "publicKey": "a2e1b7c838264efe82ff575ec07f8fb4",
+}
+```
