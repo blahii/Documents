@@ -1,8 +1,8 @@
 {
   "index": "Введение в Crypto-Cash API",
-  "another": "Merchant Crypto-Cash API",
-  "advanced": "Fiat On-Ramp iFrame API",
-  "api-documentation": "Crypto In/Out API",
+  "merchant": "Merchant Crypto-Cash API",
+  "fiat-on-ramp": "Fiat On-Ramp iFrame API",
+  "crypto-api": "Crypto In/Out API",
   "fiat-list": "Fiat List",
   "crypto-list": "Crypto List",
   "about": {
