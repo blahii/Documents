@@ -13,34 +13,6 @@
 
 ---
 
-### Создание заказа
-**URL**: `https://crypto-cash.world/merchant/api/v1/orders/create/`
-
-> **Важно**: При создании заказа сумма передается в фиатной валюте
-
-#### Параметры запроса:
-- **`publicKey`**: Публичный ключ мерчанта
-- **`amount`**: Сумма заказа
-- **`currency`**: Код фиатной валюты
-- **`number`**: Уникальный идентификатор заказа
-- **`redirectUrl`**: Ссылка для перенаправления после оплаты. Не обязательный параметр.
-
-В ответ сервер вернёт url (`paymentUrl`) для перенаправления пользователя на страницу оплаты.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "item": {
-      "paymentUrl": "https://buy-crypto.cash/merchant/order/ee6b7352-8e8a-43ad-a09e-b2f48c336e90/"
-    }
-  }
-}
-```
-
----
-
 ### Получение списка заказов
 **URL**: `https://crypto-cash.world/merchant/api/v1/orders/list/`
 
@@ -165,7 +137,7 @@ sale: - признак использования валюты для покуп
   "data": {
     "item": {
       "externalId": "195",
-      "url": "https://exchange.mercuryo.io/?widget_id=0b50150a-1ba0-445e-8637-d62f887afadc&address=...&hide_address=true&signature=...&fiat_currency=BGN&currency=USDT&networks=ERC20&fiat_amount=500.00&type=buy&fix_amount=true&fix_currency=true&fix_fiat_amount=true&fix_fiat_currency=true&merchant_transaction_id=...&lang=en&redirect_url=...",
+      "url": "https://exchange.crypto-cash.world/?widget_id=0b50150a-1ba0-445e-8637-d62f887afadc&address=...&hide_address=true&signature=...&fiat_currency=BGN&currency=USDT&networks=ERC20&fiat_amount=500.00&type=buy&fix_amount=true&fix_currency=true&fix_fiat_amount=true&fix_fiat_currency=true&merchant_transaction_id=...&lang=en&redirect_url=...",
     }
   }
 }
@@ -185,11 +157,11 @@ sale: - признак использования валюты для покуп
 | ETH      | BASE               |
 | ETH      | OPTIMISM           |
 | ETH      | LINEA              |
-| USDT     | ETHEREUM (ERC-20)  |
-| USDT     | TRON (TRC-20)      |
+| USDT     | ETHEREUM           |
+| USDT     | TRON               |
 | USDT     | SOLANA             |
 | USDT     | POLYGON            |
-| USDT     | NEWTON (TON)       |
+| USDT     | NEWTON             |
 | USDT     | BINANCESMARTCHAIN  |
 | USDC     | ARBITRUM           |
 | USDC     | STELLAR            |
@@ -220,12 +192,9 @@ sale: - признак использования валюты для покуп
 ---
 
 ### Статусы заказов
-- **Waiting**
-- **Paid**
-- **Not paid**
-
-#### Дополнительно:
-Для варианта оплаты криптовалютой используются все статусы. Также для оплаты криптовалютой есть минимальное время для обработки платежа. По умолчанию это время составляет 2 часа. Данное время может быть изменено по желанию сервиса.
+- **Waiting** - Деньги списаны с карты, ожидается завершение транзакции.
+- **Paid** - Криптовалюта отправлена, хеш-транзакции доступен в личном кабинете.
+- **Not paid** - Операция не прошла: деньги не списались или произошла ошибка.
 
 ---
 
