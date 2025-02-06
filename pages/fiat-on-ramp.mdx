@@ -186,6 +186,31 @@ sale: - признак использования валюты для покуп
 
 ---
 
+### Запрос на получение списка криптовалют
+**URL**: `https://crypto-cash.world/merchant/api/v1/pay-fiat/crypto-currencies/list/`
+
+#### Параметры (data):
+- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
+
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "items": [
+        {
+          "currency": "USDT",
+          "networks": ["TRON", "ERC20"]
+        }
+    ]
+  }
+}
+
+```
+
+---
+
 ### Поддерживаемые криптовалюты для Fiat On-Ramp iFrame API
 
 | Currency | Network            |
