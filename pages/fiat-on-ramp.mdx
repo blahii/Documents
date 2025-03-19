@@ -13,32 +13,6 @@
 
 ---
 
-### Список фиатных валют
-**URL**: `https://crypto-cash.world/merchant/api/v1/fiat-currencies/list/`
-
-#### Параметры (data):
-- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
-
-#### Пример ответа:
-```json
-{
-  "code": 200,
-  "data": {
-    "items": [
-      {"currency": "USD", "buy": false, "sale": true},
-      {"currency": "EUR", "buy": false, "sale": true},
-      {"currency": "UAH", "buy": true, "sale": false}
-    ]
-  }
-}
-```
-
-Примечание:
-buy : - признак использование валюты для продажи (false - нет, true - да)
-sale: - признак использования валюты для покупки (false - нет, true - да)
-
----
-
 ### Запрос на покупку криптовалюты за фиатные валюты
 **URL**: `https://crypto-cash.world/merchant/api/v1/pay-fiat/form/retrieve/`
 
@@ -193,6 +167,32 @@ sale: - признак использования валюты для покуп
 
 ---
 
+### Запрос на получение списка фиатных валют
+**URL**: `https://crypto-cash.world/merchant/api/v1/fiat-currencies/list/`
+
+#### Параметры (data):
+- **`publicKey`**: Публичный ключ, связанный с аккаунтом мерчанта.
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "items": [
+      {"currency": "USD", "buy": false, "sale": true},
+      {"currency": "EUR", "buy": false, "sale": true},
+      {"currency": "UAH", "buy": true, "sale": false}
+    ]
+  }
+}
+```
+
+Примечание:
+buy : - признак использование валюты для продажи (false - нет, true - да)
+sale: - признак использования валюты для покупки (false - нет, true - да)
+
+---
+
 ### Запрос на получение списка криптовалют
 **URL**: `https://crypto-cash.world/merchant/api/v1/pay-fiat/crypto-currencies/list/`
 
@@ -216,51 +216,6 @@ sale: - признак использования валюты для покуп
 }
 
 ```
-
----
-
-### Поддерживаемые криптовалюты для Fiat On-Ramp iFrame API
-
-| Currency | Network            |
-|----------|--------------------|
-| BTC      | BITCOIN            |
-| ETH      | ETHEREUM           |
-| ETH      | ZKSYNC             |
-| ETH      | ARBITRUM           |
-| ETH      | BASE               |
-| ETH      | OPTIMISM           |
-| ETH      | LINEA              |
-| USDT     | ETHEREUM           |
-| USDT     | TRON               |
-| USDT     | SOLANA             |
-| USDT     | POLYGON            |
-| USDT     | NEWTON             |
-| USDT     | BINANCESMARTCHAIN  |
-| USDC     | ARBITRUM           |
-| USDC     | STELLAR            |
-| USDC     | SOLANA             |
-| USDC     | BASE               |
-| USDC     | POLYGON            |
-| USDC     | NEAR_PROTOCOL      |
-| USDC     | ETHEREUM           |
-| SOL      | SOLANA             |
-| XRP      | RIPPLE             |
-| DOGE     | DOGECOIN           |
-| TRX      | TRON               |
-| LTC      | LITECOIN           |
-| BCH      | BITCOINCASH        |
-| AVAX     | AVALANCHE          |
-| 1INCH    | BINANCESMARTCHAIN  |
-| ADA      | CARDANO            |
-| SHIB     | ETHEREUM           |
-| POL      | POLYGON            |
-| UNI      | ETHEREUM           |
-| DOT      | POLKADOT           |
-| ATOM     | COSMOS             |
-| MANA     | ETHEREUM           |
-| NEAR     | NEAR_PROTOCOL      |
-| NOT      | NEWTON             |
-| TON      | NEWTON             |
 
 ---
 
