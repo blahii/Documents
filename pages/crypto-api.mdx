@@ -96,6 +96,87 @@
 
 ---
 
+### Запрос на получения списка транзакций
+
+**URL**: `https://crypto-cash.world/merchant/api/v1/balance/payments/list/ `
+
+#### Параметры запроса:
+- **`publicKey`**: Публичный ключ мерчанта
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "items": [
+      {
+        "id": "a46f3f3a-68c9-432d-8b55-382c0fdcc6d0",
+        "pair": "ETH/USDT",
+        "hash": "",
+        "amount": "0.0041196400",
+        "commission": "0.0000737100",
+        "status": "In process",
+        "transactionType": "Buy",
+        "externalId": "external_id",
+        "createdAt": "2025-03-26T11:31:44.695618+02:00",
+        "updatedAt": "2025-03-26T11:32:00.749923+02:00"
+      },
+      {
+        "id": "095b5e33-68af-42c6-9bf5-083e5eb78c7c",
+        "pair": "ETH/USDT",
+        "network": "ERC20",
+        "hash": "",
+        "amount": "10.0000000000",
+        "commission": "0.0100000000",
+        "address": "0xEBA1f630221e72691353dEC8817BFf2bC78Fb4a9",
+        "status": "Pending",
+        "externalId": "external_id",
+        "transactionType": "Sale",
+        "createdAt": "2025-03-26T11:28:05.588879+02:00",
+        "updatedAt": "2025-03-26T11:28:05.588905+02:00"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "pageSize": 2,
+      "total": 20
+    }
+  }
+}
+```  
+
+---
+
+### Запрос на получения конкретной транзакции
+
+**URL**: `https://crypto-cash.world/merchant/api/v1/balance/payments/retrieve/`
+
+#### Параметры запроса:
+- **`publicKey`**: Публичный ключ мерчанта
+
+#### Пример ответа:
+```json
+{
+  "code": 200,
+  "data": {
+    "item": {
+       "id": "a46f3f3a-68c9-432d-8b55-382c0fdcc6d0",
+        "pair": "ETH/USDT",
+        "hash": "",
+        "amount": "0.0041196400",
+        "commission": "0.0000737100",
+        "status": "Successful",
+        "transactionType": "Buy",
+        "externalId": "external_id",
+        "createdAt": "2025-03-26T11:31:44.695618+02:00",
+        "updatedAt": "2025-03-26T11:32:00.749923+02:00"
+    }
+  }
+}
+```  
+
+---
+
 ## Справочная информация
 
 ### Список криптовалют
