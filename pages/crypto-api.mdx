@@ -184,6 +184,32 @@
 
 ---
 
+### Запрос на возврат средств
+
+**URL**: `https://api.crypto-cash.world/merchant/api/v1/balance/actions/aml/refund`
+
+#### Параметры запроса:
+- **`publicKey`**: Публичный ключ мерчанта
+- **`externalId`**: Внешний ID. Необязательный параметр если передается **`internalId`**
+- **`internalId`**: Внутренний ID. Необязательный параметр если передается **`externalId`**
+- **`address`**: Кошелек на который будет произведен возврат. (В той же сети и валюте)
+
+#### Пример ответа:
+```json
+{
+      code: 200,
+      data: {
+        item: {
+           "id": "string";
+           "transactionId": "string";
+            address: "string";
+        }
+      }
+}
+```  
+
+---
+
 ### Внешняя ссылка для получения курсов
 
 **URL**: `https://crypto-cash.world/market/rates/export/xml/`
