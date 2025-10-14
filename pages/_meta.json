@@ -11,8 +11,8 @@
   },
   "contact": {
     "title": "Contact ↗",
-    "type": "page",
-    "href": "info@crypto-cash.world",
+    "type": "link",
+    "href": "https://t.me/CCW_Admin",
     "newWindow": true
   }
 }
