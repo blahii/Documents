@@ -288,9 +288,9 @@
 
 ### Внешняя ссылка для получения курсов
 
-**URL**: `https://crypto-cash.world/market/rates/export/xml/`
+**URL**: `https://rates.crypto-cash.world/api/v1/market/rates/export/xml`
 
-**URL**: `https://crypto-cash.world/market/rates/export/json/`
+**URL**: `https://rates.crypto-cash.world/api/v1/market/rates/export/json`
 
 ---
 
@@ -305,75 +305,198 @@
 #### Пример ответа:
 ```json
 {
-  "code": 200,
-  "data": {
-    "items": [
-      {
-        "currency": "BTC",
-        "networks": [
-          "BITCOIN"
-        ],
-        "tickers": [
-          "BTC"
-        ]
-      },
-      {
-        "currency": "ETH",
-        "networks": [
-          "ZKSYNC",
-          "BASE",
-          "ARBITRUM",
-          "OPTIMISM",
-          "LINEA",
-          "ERC20"
-        ],
-        "tickers": [
-          "ETHOPTM",
-          "ETHARBTM",
-          "ETHZKSYNC",
-          "ETHLINEA",
-          "ETHBASE",
-          "ETH"
-        ]
-      },
-      {
-        "currency": "USDT",
-        "networks": [
-          "NEWTON",
-          "AVALANCHE",
-          "POLYGON",
-          "BINANCESMARTCHAIN",
-          "TRC20",
-          "ARBITRUM",
-          "SOLANA",
-          "ERC20"
-        ],
-        "tickers": [
-          "USDTPOLYGON",
-          "USDTSOL",
-          "USDTARBTM",
-          "USDTERC20",
-          "USDTBEP20",
-          "USDTTRC20",
-          "USDTTON",
-          "USDTAVAXC"
-        ]
-      }
+    "code": 200,
+    "data": {
+        "items": [
+            {
+                "currency": "USDT",
+                "networks": [
+                    {
+                        "name": "TRC20",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "ERC20",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "POLYGON",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "ARBITRUM",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "BEP20",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "CCHAIN",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "NEAR",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "SOL",
+                        "isMemoRequired": false
+                    },
+                    {
+                        "name": "TON",
+                        "isMemoRequired": true
+                    }
+                ],
+                "tickers": [
+                    "USDTTRC20",
+                    "USDTERC20",
+                    "USDTPOLYGON",
+                    "USDTARBTM",
+                    "USDTBEP20",
+                    "USDTC",
+                    "USDTNEAR",
+                    "USDTSOL",
+                    "USDTTON"
+                ],
+                "limits": [
+                    {
+                        "network": "TRC20",
+                        "ticker": "USDTTRC20",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "ERC20",
+                        "ticker": "USDTERC20",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "0.01",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "POLYGON",
+                        "ticker": "USDTPOLYGON",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "ARBITRUM",
+                        "ticker": "USDTARBTM",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "BEP20",
+                        "ticker": "USDTBEP20",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "CCHAIN",
+                        "ticker": "USDTC",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "NEAR",
+                        "ticker": "USDTNEAR",
+                        "min_deposit": "5",
+                        "min_withdraw": "1",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "SOL",
+                        "ticker": "USDTSOL",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    },
+                    {
+                        "network": "TON",
+                        "ticker": "USDTTON",
+                        "min_deposit": "5",
+                        "min_withdraw": "10",
+                        "network_fee": "1",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    }
+                ]
+            },
+            {
+                "currency": "BTC",
+                "networks": [
+                    {
+                        "name": "BTC",
+                        "isMemoRequired": false
+                    }
+                ],
+                "tickers": [
+                    "BTC"
+                ],
+                "limits": [
+                    {
+                        "network": "BTC",
+                        "ticker": "BTC",
+                        "min_deposit": "0.0001",
+                        "min_withdraw": "0.0003",
+                        "network_fee": "0.00009",
+                        "availability": true,
+                        "acquiring": true,
+                        "withdrawal": true
+                    }
+                ]
+            }
+          ]
+    }
 }
 ```
 
 ---
 
-### Статусы заказов
+### Статусы заказов в ответах API
+- **Queued**
 - **New**
 - **Waiting**
 - **Paid**
-- **Not paid**
+- **Notpaid**
 - **Underpaid**
 - **Overpaid**
 - **Canceled**
-- **AML Frozen**
-- **Currency mismatch**
+- **AMLFrozen**
+- **CurrencyMismatch**
+- **CanceledButPaid**
+- **CanceledButOverpaid**
+- **CanceledButUnderpaid**
 
 ---
 
@@ -396,13 +519,4 @@
 - **3001** - Заказ не найден
 - **3002** - Транзакция не найдена
 - **4003** - Аккаунт не активирован
-
----
-
-### Вебхуки
-Сервис предоставляет возможность настроить вебхуки, чтобы получать уведомления о событиях, связанных с изменением статуса заказа. Для настройки вебхука необходимо в настройках аккаунта указать URL, на который будут отправляться данные.
-
-#### Формат вебхука:
-- **`data`**: Поле содержит объект JSON с информацией о заказе, закодированный в строку base64.
-- **`signature`**: Подпись запроса, созданная на основе приватного ключа и данных (`SECRET_KEY` + `data`). Подпись кодируется в SHA256 и затем в base64.
 
