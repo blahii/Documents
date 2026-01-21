@@ -294,6 +294,524 @@
 
 ---
 
+
+## Webhooks
+
+### Event Types
+
+Все события происходят по шаблону "{категория}::{действие}".
+
+#### События вывода
+
+| Event Type | Description | Webhook | Email |
+|------------|-------------|---------|-------|
+| `withdrawal::created` | Транзакция создана и поставлена в очередь | ✓ | ✗ |
+| `withdrawal::completed` | Успешно отправлен в блокчейн | ✓ | ✓ |
+| `withdrawal::declined` | Отклонено платежным провайдером | ✓ | ✓ |
+| `withdrawal::failed` | Произошла критическая ошибка | ✓ | ✓ |
+| `withdrawal::canceled` | Отмена по причине ошибки | ✓ | ✓ |
+
+#### События пополнения
+
+| Event Type | Description | Webhook | Email |
+|------------|-------------|---------|-------|
+| `acquiring::created` | Депозит создан | ✓ | ✗ |
+| `acquiring::deposit_received` | Депозит подтвержден, USDT зачислено на баланс | ✓ | ✗ |
+| `acquiring::completed` | Заявка выполнена | ✓ | ✓ |
+| `acquiring::overpaid` | Получено больше, чем ожидалось | ✓ | ✓ |
+| `acquiring::underpaid` | Получено меньше, чем ожидалось | ✓ | ✓ |
+| `acquiring::currency_mismatch` | Криптовалюта пополнения не совпадает с валютой в заявке | ✓ | ✓ |
+| `acquiring::declined` | Отклонено платежным провайдером | ✓ | ✓ |
+| `acquiring::canceled` | Срок действия заявки истек без оплаты | ✓ | ✓ |
+
+> ** Примечание:** Все события отправляются через webhooks, но только критические / заключительные события запускают уведомления по электронной почте.
+
+---
+
+### Webhook Payload Structure
+
+```json
+{
+  "id": "550e8400-e29b-daw6-a716-446655440000",
+  "delivered_at": "2026-01-01T12:00:00.000Z",
+  "event": {
+    "event_type": "withdrawal::completed",
+    "timestamp": "2026-01-01T12:00:00.000Z",
+    "data": { /* Transaction data */ }
+  },
+  "signature": "base64_encoded_signature"
+}
+``` 
+
+Payload Fields:
+**`id`** - Уникальный UUID 4 версии (защита от воспроизведения)
+**`delivered_at`** - Временная метка ISO 8601, когда был отправлен webhook
+**`event`** - Данные о событии транзакции
+**`signature`** - Закодированная в Base64 сигнатура, охватывающая всю полезную нагрузку (id + delivered_at + событие)
+
+---
+
+### Алгоритм генерации подписи
+
+Подпись охватывает полный payload вебхука: {id, delivered_at, event}.
+Поддерживаются два алгоритма подписи в зависимости от keyType:
+
+**ED25519 (Рекомендуемый)**
+1. Создать объект payload: {id, delivered_at, event}
+2. JSON.stringify(payload)
+3. Закодировать JSON-строку в Base64
+4. Подписать с помощью ED25519 (ed25519.signAsync)
+5. Закодировать подпись в Base64
+
+**Legacy (Устаревший)**
+1. Создать объект payload: {id, delivered_at, event}
+2. JSON.stringify(payload)
+3. Закодировать JSON-строку в Base64
+4. SHA256 хеш (privateKey + data)
+5. Закодировать хеш в Base64
+
+**Особенности безопасности:**
+- Подпись охватывает все поля, включая id и delivered_at
+- Уникальный id предотвращает атаки повторного воспроизведения (replay attacks)
+- Валидация временной метки предотвращает принятие устаревших вебхуков (окно 16 минут)
+- 16-минутное окно учитывает повторные попытки Cloud Tasks (немедленно + 5 мин + 10 мин) + сетевой буфер
+- ED25519 обеспечивает криптографическую подлинность
+
+---
+
+### Логика повторной попытки
+Первая попытка: Немедленно
+Первая попытка: задержка в 300 секунд (5 минут)
+Вторая попытка: задержка в 600 секунд (10 минут)
+Ошибка: задача удалена из очереди, логированна
+
+---
+
+### Widthdrawal - примеры ответов
+
+**`withdrawal::created`**
+
+#### Пример ответа:
+```json
+{
+  "id": "4ac4db14-10xj-9sa8-jsia-7e7997e5b588",
+  "delivered_at": "2026-01-01T15:00:00.124Z",
+  "event": {
+    "event_type": "withdrawal::created",
+    "timestamp": "2026-01-01T00:00:00.122Z",
+    "data": {
+      "id": "723173b2-0ax8-ak19-9xns-a1331eee89a8",
+      "externalId": "webhooks-template",
+      "address": "rakxkvnX2HYkJR8f9XgrsYu1ksnc9YMpbbT",
+      "pair": "USDT/XMR",
+      "network": "XMR",
+      "expectedAmount": "10000",
+      "requestedAmount": "9999",
+      "amount": null,
+      "usdtTotal": "5359685,71",
+      "exchangeRate": "535,97",
+      "cancelReason": null,
+      "type": "Buy",
+      "status": "Queued",
+      "memo": null,
+      "userId": "725ad60d-sk9c-am29-cxk2-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.115Z",
+      "updatedAt": "2026-01-01T00:00:01.115Z",
+      "completedAt": null
+    }
+  },
+  "signature": "YWVlZTZiNGFhODRhM2Y5MDRhNzY2YTg0MjUyNzY2NGZhMGY5NWIwYjnvgmNiZmM1ZjAxMjIyY2Y3NTBlYWQxNA=="
+}
+```  
+
+---
+
+**`withdrawal::completed`**
+
+#### Пример ответа:
+```json
+{
+  "id": "33499ac7-ksia-8xja-vka8-443a089fe308",
+  "delivered_at": "2026-01-01T00:00:00.190Z",
+  "event": {
+    "event_type": "withdrawal::completed",
+    "timestamp": "2026-01-01T00:00:01.189Z",
+    "data": {
+      "id": "723173b2-js8f-vos8-9os7-a1331eee89a8",
+      "externalId": "webhooks-template",
+      "address": "rakxkvnX2HYkJR8f9XgrsYu1ksnc9YMpbbT",
+      "pair": "USDT/XMR",
+      "network": "XMR",
+      "expectedAmount": "10000",
+      "requestedAmount": "9999",
+      "amount": "9999",
+      "usdtTotal": "5359149,74",
+      "exchangeRate": "535,97",
+      "cancelReason": null,
+      "type": "Buy",
+      "status": "Paid",
+      "memo": null,
+      "userId": "725ad60d-sjc8-ansj-j8cs-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:01.115Z",
+      "updatedAt": "2026-01-01T00:01:00.120Z",
+      "completedAt": "2026-01-01T00:02:00.000Z"
+    }
+  },
+  "signature": "YjkyNDJhZTlmNGUzZWYyMzM4ODBiYzdhNzIzNzNhZjMzMzMwNawujxi74NmZmZDg0ZDg4MTZjNzAwMTZmZjFjYg=="
+}
+```
+
+---
+
+**`withdrawal::declined`**
+
+#### Пример ответа:
+```json
+
+```
+
+---
+
+**`withdrawal::failed`**
+
+#### Пример ответа:
+```json
+
+```
+
+---
+
+**`withdrawal::canceled`**
+
+#### Пример ответа:
+```json
+{
+  "id": "b391d098-ks7x-alx9-wjs8-50a66e42bb56",
+  "delivered_at": "2026-01-01T00:00:00.848Z",
+  "event": {
+    "event_type": "withdrawal::canceled",
+    "timestamp": "2025-01-01T00:00:01.847Z",
+    "data": {
+      "id": "1c8cae27-cis9-alc0-1kx9-eead2bd77462",
+      "externalId": "webhooks-template",
+      "address": "123123123123",
+      "pair": "USDT/USDT",
+      "network": "TRC20",
+      "expectedAmount": "5000",
+      "requestedAmount": "4999",
+      "amount": null,
+      "usdtTotal": "4999",
+      "exchangeRate": "1",
+      "cancelReason": "Invalid address. Please provide a correct address.",
+      "type": "Buy",
+      "status": "Canceled",
+      "memo": null,
+      "userId": "725ad60d-sklv-1lc0-a0cj-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:01.839Z",
+      "updatedAt": "2026-01-01T00:00:02.831Z",
+      "completedAt": null
+    }
+  },
+  "signature": "ODc2YjcxYTZhYzk2MmIxMWMxNzdiMmY5OWasj8vY2Y2MmFjYmI1MGQwMDJjNjVhZWU4NzA3ZDBiMjgyNzM2NQ=="
+}
+```
+
+---
+
+### Acquiring - примеры ответов
+
+**`acquiring::created`**
+
+#### Пример ответа:
+```json
+{
+  "id": "f0780319-a9sv-skvi-8cla-15646e8994e7",
+  "delivered_at": "2026-01-01T00:00:00.380Z",
+  "event": {
+    "event_type": "acquiring::created",
+    "timestamp": "2026-01-01T00:00:00.379Z",
+    "data": {
+      "id": "779320f4-vka8-1oas-cais-8426253a8f40",
+      "externalId": "webhooks-template",
+      "address": "r4aposNctDcmDighxakxkcittVQ14oQaHQ",
+      "pair": "XRP/USDT",
+      "network": "XRP",
+      "expectedAmount": "27",
+      "requestedAmount": "27",
+      "amount": null,
+      "usdtTotal": null,
+      "exchangeRate": null,
+      "cancelReason": null,
+      "type": "Sale",
+      "status": "New",
+      "memo": "3460932517",
+      "userId": "725ad60d-zoa9-4akd-voa9-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.362Z",
+      "updatedAt": "2026-01-01T00:00:01.362Z",
+      "completedAt": null
+    }
+  },
+  "signature": "MjI4YzY5YmY1ZDcyMThjMDIyNjg3ZTc1NDaks8FiOTdiYmI4M2JjODhmNzZjMDNkM2IzZWZkMWQ0MTVmYWRjMw=="
+}
+```
+
+---
+
+**`acquiring::deposit_received`**
+
+#### Пример ответа:
+```json
+{
+  "id": "477d439f-aox9-qlxo-a9m2-8f4757a79254",
+  "delivered_at": "2026-01-01T00:00:00.024Z",
+  "event": {
+    "event_type": "acquiring::deposit_received",
+    "timestamp": "2026-01-01T00:00:00.024Z",
+    "data": {
+      "id": "779320f4-vual-qod8-q0xl-8426253a8f40",
+      "externalId": "webhooks-template",
+      "address": "r4aposNctDcmDighxrwaskc8tVQ14oQaHQ",
+      "pair": "XRP/USDT",
+      "network": "XRP",
+      "expectedAmount": "27",
+      "requestedAmount": "27",
+      "amount": "25",
+      "usdtTotal": "46.386795",
+      "exchangeRate": "1.860434618644",
+      "cancelReason": null,
+      "type": "Sale",
+      "status": "Underpaid",
+      "memo": "3460919217",
+      "userId": "725ad60d-aoc8-akwg-vuas-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.362Z",
+      "updatedAt": "2026-01-01T00:00:01.994Z",
+      "completedAt": "2026-01-01T00:00:01.000Z"
+    }
+  },
+  "signature": "N2I3OGQwMGQ2NGQ3ZsauxGU4Y2Y0NWYwZGE0N2JhZmRiOTM0NDVhNjk2NGQ1NzBjZmZiOTIzMzAyYTg2YTA2Ng=="
+}
+```
+
+---
+
+**`acquiring::completed`**
+
+#### Пример ответа:
+```json
+{
+  "id": "f2537489-slv8-aqov-8ss2-97f58ce08dc1",
+  "delivered_at": "2026-01-01T00:00:00.425Z",
+  "event": {
+    "event_type": "acquiring::completed",
+    "timestamp": "2026-01-01T00:00:00.425Z",
+    "data": {
+      "id": "c867688a-skc8-q19d-va9s-cb751ed9855c",
+      "externalId": "webhooks-template",
+      "address": "TLXm6J8JtxQTq6SSskwsqq9ff13avxyDdjXw",
+      "pair": "USDT/USDT",
+      "network": "TRC20",
+      "expectedAmount": "20",
+      "requestedAmount": "20",
+      "amount": "20",
+      "usdtTotal": "19.95002",
+      "exchangeRate": "1",
+      "cancelReason": null,
+      "type": "Sale",
+      "status": "Paid",
+      "memo": null,
+      "userId": "725ad60d-aw8d-qso8-ca53-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.184Z",
+      "updatedAt": "2026-01-01T00:00:01.397Z",
+      "completedAt": "2026-01-01T00:00:01.000Z"
+    }
+  },
+  "signature": "YjdjNTU4NmVmMGU0ZWFlZThkYasdjkNzQ1ZGEyMmQxMDgwZWYyYWVmNzk2YTNlZGI1MmEwMDYxODM0MjIwNGMyMA=="
+}
+```
+
+---
+
+**`acquiring::overpaid`**
+
+#### Пример ответа:
+```json
+{
+  "id": "35158bf5-sv8a-1kci-asov-9aeeb06f2fca",
+  "delivered_at": "2026-01-01T00:00:00.185Z",
+  "event": {
+    "event_type": "acquiring::overpaid",
+    "timestamp": "2026-00-01T00:00:00.184Z",
+    "data": {
+      "id": "9a97e26c-ajsu-ax8v-1ksi-8a86354c2fc3",
+      "externalId": "webhooks-template",
+      "address": "TVW4dKXVZ2rnUb72asdsa3w41Akv1gnKisY",
+      "pair": "TRX/USDT",
+      "network": "TRC20",
+      "expectedAmount": "60",
+      "requestedAmount": "60",
+      "amount": "80",
+      "usdtTotal": "22.76861",
+      "exchangeRate": "0.28543295199",
+      "cancelReason": null,
+      "type": "Sale",
+      "status": "Overpaid",
+      "memo": null,
+      "userId": "725ad60d-ax8v-qkx8-bcka-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.150Z",
+      "updatedAt": "2026-01-01T00:00:01.143Z",
+      "completedAt": "2026-01-01T00:00:01.000Z"
+    }
+  },
+  "signature": "NjU1Njg5ZmQ2NmMzZDk1YzadsjA5ZDFkYTI3NjgyNDg1MGZmZTA2MTg3YTg0ODY3NmE2OWZjNzBmZTMzODYzMA=="
+}
+```
+
+---
+
+**`acquiring::underpaid`**
+
+#### Пример ответа:
+```json
+ {
+  "id": "915f288a-dais-vask-iv8a-ce209626d53e",
+  "delivered_at": "2026-01-01T00:00:01.026Z",
+  "event": {
+    "event_type": "acquiring::underpaid",
+    "timestamp": "2026-01-01T00:00:00.026Z",
+    "data": {
+      "id": "779320f4-ckai-qxfu-aoxc-8426253a8f40",
+      "externalId": "webhools-template",
+      "address": "r4aposNctDcmDighxrwcoDdasdQ14oQaHQ",
+      "pair": "XRP/USDT",
+      "network": "XRP",
+      "expectedAmount": "27",
+      "requestedAmount": "27",
+      "amount": "25",
+      "usdtTotal": "46.386795",
+      "exchangeRate": "1.860434618644",
+      "cancelReason": null,
+      "type": "Sale",
+      "status": "Underpaid",
+      "memo": "3460932517",
+      "userId": "725ad60d-dvv7-kdua-bck3-8136e1fd627e",
+      "createdAt": "2026-01-01T00:00:00.362Z",
+      "updatedAt": "2026-01-01T00:00:01.994Z",
+      "completedAt": "2026-01-01T00:00:01.000Z"
+    }
+  },
+  "signature": "YjQ4ZGVkNzRjZDdmYjdajuM0NjI5ZTkyODgzOTE5OWRmNmY1YTc4OGY2YzQyNGU2MGNjNGU3OGQ4NWIwYmFhMQ=="
+}
+```
+
+---
+
+**`acquiring::currency_mismatch`**
+
+#### Пример ответа:
+```json
+
+```
+
+---
+
+**`acquiring::declined`**
+
+#### Пример ответа:
+```json
+
+```
+
+---
+
+**`acquiring::canceled`**
+
+#### Пример ответа:
+```json
+
+```
+
+---
+
+### Алгоритм генерации подписи
+
+**ВАЖНО:** Всегда проверяйте веб-узлы, чтобы предотвратить подделку и повторные атаки.
+
+#### Полный алгоритм проверки
+
+```json
+import * as ed25519 from '@noble/ed25519';
+
+interface WebhookPayload {
+  id: string;
+  delivered_at: string;
+  event: {
+    event_type: string;
+    timestamp: string;
+    data: any;
+  };
+  signature: string;
+}
+
+async function verifyWebhook(
+  webhook: WebhookPayload,
+  publicKey: string,
+  seenWebhookIds: Set<string>
+): Promise<boolean> {
+  // 1. Replay Protection: Check if webhook ID already processed
+  if (seenWebhookIds.has(webhook.id)) {
+    throw new Error('Replay attack detected: webhook ID already processed');
+  }
+
+  // 2. Timestamp Validation: Reject webhooks older than 16 minutes or from future
+  // Max delivery time: 15 min (immediate + 5min retry + 10min retry) + 1min network buffer
+  const deliveredAt = new Date(webhook.delivered_at);
+  const now = Date.now();
+  const timeDiff = Math.abs(now - deliveredAt.getTime());
+
+  if (timeDiff > 960000) { // 16 minutes
+    throw new Error('Webhook timestamp outside acceptable window');
+  }
+
+  // 3. Signature Verification: Verify signature covers entire payload
+  const payload = {
+    id: webhook.id,
+    delivered_at: webhook.delivered_at,
+    event: webhook.event
+  };
+
+  // Reconstruct signed data (same as server)
+  const json = JSON.stringify(payload);
+  const data = Buffer.from(json, 'utf8').toString('base64');
+
+  // Decode signature and public key
+  const signatureBytes = Buffer.from(webhook.signature, 'base64');
+  const publicKeyBytes = Buffer.from(publicKey, 'hex');
+  const dataBytes = Buffer.from(data, 'utf8');
+
+  // Verify with ED25519
+  const isValid = await ed25519.verifyAsync(signatureBytes, dataBytes, publicKeyBytes);
+
+  if (!isValid) {
+    throw new Error('Invalid signature: webhook authentication failed');
+  }
+
+  // 4. Store webhook ID to prevent future replay
+  seenWebhookIds.add(webhook.id);
+
+  return true;
+}
+```
+
+#### Этапы проверки ED25519
+
+1. Защита от повторного воспроизведения - Проверьте **`webhook.id`**, который не был замечен ранее
+2. Проверка метки времени - проверка delivery_at в течение 16 минут (максимальное время доставки + буфер)
+3. Восстановление полезной нагрузки - {id, delivery_at, event}
+4. Проверка подписи - ed25519.verifyAsync (signature, payload, publicKey)
+5. Сохранить идентификатор веб-узла - сохранить для предотвращения повторного воспроизведения
+
+---
+
 ## Справочная информация
 
 ### Список криптовалют
