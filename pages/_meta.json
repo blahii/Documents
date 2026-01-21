@@ -5,6 +5,7 @@
   "crypto-api": "Crypto In/Out API",
   "crypto-list": "Crypto List",
   "fiat-list": "Fiat List",
+  "webhooks": "Webhooks",
   "about": {
     "title": "About",
     "type": "page"
